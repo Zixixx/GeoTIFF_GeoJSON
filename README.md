@@ -161,5 +161,3 @@ training:
 
 - 感谢 Qwen 系列模型及其开源生态，为几何序列生成提供了稳定的语言模型基础。
 - 感谢 DINO 相关工作，为遥感影像视觉特征提取提供了强大的视觉 backbone。
-- 感谢 Hugging Face `transformers` 与 `peft` 社区，为本项目的本地加载、LoRA 微调和权重管理提供了成熟工具链。
-- 感谢 `rasterio`、`shapely` 等地理空间开源库，让遥感影像与 GeoJSON 的处理流程能够更可靠地落地。
