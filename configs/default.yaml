@@ -123,10 +123,9 @@ inference:
   batch_size: 1
   # 推理阶段单个 patch 的最大生成长度。
   # 如果不设，代码默认使用 2 * max_points * max_features + 2。
-  # 当模型迟迟不输出 EOS 时，这个值过大会让单个 patch 推理非常慢。
   max_length: 2048
   # 生成循环中的日志间隔，单位是 token steps。
-  # 0 表示关闭；例如设为 200 时，每生成 200 步打印一次进度。
+  # 0 表示关闭；例如设为 256 时，每生成 256 步打印一次进度。
   generate_log_interval: 256
   checkpoint_path: ./checkpoints/best_model
   output_dir: ./outputs
