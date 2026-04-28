@@ -67,30 +67,43 @@ pip install -r requirement.txt
 ## 项目流程
 
 ### 1. 配置config/default.yaml
+
 ```text
 config/default.yaml中已注释各个参数的含义
 ```
+
 ### 2. 检查目录、样本和 patch 配置
+
 ```bash
 python scripts/preprocess.py
 ```
+
 ### 3. 提取 train / val / test 的 DINO 特征
+
 ```bash
 python scripts/extract_features.py
 ```
+
 ### 4. 提取 train / val 的 GeoJSON token
+
 ```bash
 python scripts/extract_tokens.py
 ```
+
 ### 5. 训练 Qwen
+
 ```bash
 python scripts/train.py
 ```
+
 ### 6. 测试集推理
+
 ```bash
 python scripts/infer.py
 ```
+
 ### 7. 用测试集真值评估
+
 ```bash
 python scripts/evaluate.py
 
