@@ -1,5 +1,5 @@
 model:
-  # 本地 Qwen 模型目录，应指向 Hugging Face 模型根目录，在 lora / frozen 模式下，infer.py 会优先把它当作 Qwen 基座目录使用。
+  # 本地 Qwen 模型目录。在 lora / frozen 模式下，infer.py 会优先把它当作 Qwen 基座目录使用。
   name: null
 
   # 本地 DINO 模型目录。目录中应同时包含源码、hubconf.py 和 .pth 权重文件。
