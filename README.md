@@ -70,7 +70,6 @@ pip install -r requirement.txt
 ```text
 config/default.yaml中已注释各个参数的含义
 ```
-
 ### 2. 检查目录、样本和 patch 配置
 ```bash
 python scripts/preprocess.py
@@ -143,19 +142,7 @@ training:
 - `0`：关闭
 - `>0`：每若干个 optimizer step 覆盖保存一次 `checkpoints/latest_step`
 
-## 主要依赖
-
-- `PyTorch`：用于模型训练、推理以及混合精度、多卡相关能力。
-- `transformers`：用于加载和调用 Qwen 基座模型。
-- `peft`：用于 LoRA 微调、适配器保存与加载。
-- `safetensors`：用于加载本地 Qwen 权重分片。
-- `rasterio`：用于读取 GeoTIFF/TIFF 影像和地理变换信息。
-- `shapely`：用于 GeoJSON 几何裁剪、合并和距离计算。
-- `numpy`：用于数值计算与特征张量处理。
-- `pyyaml`：用于读取 `configs/default.yaml` 配置文件。
-- `affine`：用于像素坐标和地理坐标之间的仿射变换。
-
 ## 致谢
 
-- 感谢 Qwen 系列模型及其开源生态，为几何序列生成提供了稳定的语言模型基础。
-- 感谢 DINO 相关工作，为遥感影像视觉特征提取提供了强大的视觉 backbone。
+- [DINOv3](https://github.com/facebookresearch/dinov3)
+- [Qwen3](https://github.com/QwenLM/Qwen3)
