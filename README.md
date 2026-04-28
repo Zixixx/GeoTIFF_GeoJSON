@@ -152,10 +152,8 @@ training:
 - `rasterio`：用于读取 GeoTIFF/TIFF 影像和地理变换信息。
 - `shapely`：用于 GeoJSON 几何裁剪、合并和距离计算。
 - `numpy`：用于数值计算与特征张量处理。
-- `PyYAML`：用于读取 `configs/default.yaml` 配置文件。
+- `pyyaml`：用于读取 `configs/default.yaml` 配置文件。
 - `affine`：用于像素坐标和地理坐标之间的仿射变换。
-
-更完整的依赖清单请查看项目根目录下的 `requirements.txt`、`requirements.train.txt` 和 `requirements.data.txt`。
 
 ## 致谢
 
