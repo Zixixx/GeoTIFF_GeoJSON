@@ -12,7 +12,7 @@
 GeoTIFF_GeoJSON/
   configs/default.yaml
   scripts/
-    preprocess.py
+    check.py
     extract_features.py
     extract_tokens.py
     train.py
@@ -72,10 +72,10 @@ pip install -r requirement.txt
 config/default.yaml中已注释各个参数的含义
 ```
 
-### 2. 检查目录、样本和 patch 配置
+### 2. 检查目录、权重、样本和 patch 配置
 
 ```bash
-python scripts/preprocess.py
+python scripts/check.py
 ```
 
 ### 3. 提取 train / val / test 的 DINO 特征
