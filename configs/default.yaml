@@ -1,0 +1,152 @@
+model:
+  # 本地 Qwen 模型目录。在 lora / frozen 模式下，infer.py 会优先把它当作 Qwen 基座目录使用。
+  name: null
+
+  # 本地 DINO 模型目录。目录中应同时包含源码、hubconf.py 和 .pth 权重文件。
+  backbone: null
+
+  #需要与本地 DINO torch.hub 仓库中的入口函数一致，如"dinov3_vit7b16"。
+  dino_model_name: null
+
+  # 本地 DINO torch.hub 仓库路径，目录中应包含 hubconf.py。
+  dino_repo_or_dir: null
+
+  # 视觉投影层输出到 Qwen 前使用的隐藏维度。
+  hidden_size: 256
+
+  # 每个 patch 中最多保留多少条几何要素。
+  max_features: 50
+
+  # 每条几何最多保留多少个点。
+  max_points_per_feature: 100
+
+  # 是否强制只从本地加载模型，不访问网络。
+  local_files_only: true
+
+  # Qwen 微调模式：
+  # - lora: 推荐，不容易OOM
+  # - full: 完整微调 Qwen，checkpoint 内会保存 qwen_finetuned
+  # - frozen: 冻结 Qwen，仅训练视觉投影层
+  qwen_tuning_mode: lora
+
+  # LoRA 配置
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  lora_ensure_weight_tying: true
+  lora_target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+
+  # 新增几何 token 需要保留 embedding / lm_head，否则 LoRA 模式下学不到新增 token 的输出。
+  lora_modules_to_save:
+    - embed_tokens
+    - lm_head
+
+  # 新增几何 token 的初始化是否参考旧词表分布
+  embedding_mean_resizing: false
+
+  # Qwen 注意力实现，可选填 flash_attention_2；如果环境不支持，代码会自动回退。
+  attn_implementation: flash_attention_2
+
+data:
+  train:
+    image_root: ./data/train/images
+    label_root: ./data/train/labels
+    mask_root: ./data/train/masks
+    feature_root: ./data/train/feature
+    token_root: ./data/train/token
+  val:
+    image_root: ./data/val/images
+    label_root: ./data/val/labels
+    mask_root: ./data/val/masks
+    feature_root: ./data/val/feature
+    token_root: ./data/val/token
+  test:
+    image_root: ./data/test/images
+    label_root: ./data/test/labels
+    feature_root: ./data/test/feature
+
+  # 单个 patch 的边长，单位为像素。
+  tile_size_px: 750
+
+  # 相邻 patch 的重叠像素。
+  overlap_px: 0
+
+  # 当提供 mask 时，patch 中前景像素占比达到该阈值才保留。
+  min_mask_ratio: 0.02
+
+  # 离线 DINO 特征保存精度：
+  # - float16: 默认，磁盘更省，推理/训练前会自动转换到所需 dtype
+  # - float32: 更稳，适合排查数值问题
+  feature_dtype: float16
+
+training:
+  batch_size: 1
+  val_batch_size: 1
+  feature_batch_size: 1
+
+  # 数据集在 CPU 内存中最多缓存多少个 feature/token 文件。
+  # 设为 1 可以更稳地控制内存增长。
+  dataset_cache_files: 1
+
+  # 是否启用 PyTorch DataParallel。
+  # 这是多卡复制，不是 ZeRO/FSDP 这类真正的模型切分。
+  use_data_parallel: false
+
+  # DataParallel 使用的设备列表。留空时默认使用所有可见 GPU。
+  device_ids: null
+
+  optimizer: adamw
+  adam_betas: [0.9, 0.999]
+  adam_epsilon: 1e-8
+  weight_decay: 0.01
+  learning_rate: 1e-4
+
+  # 混合精度模式：
+  # - auto: 优先 bf16，不支持时退回 fp16
+  # - bf16 / fp16 / none
+  mixed_precision: auto
+  gradient_checkpointing: true
+  grad_accum_steps: 1
+  max_grad_norm: 1.0
+
+  # 是否按若干个 optimizer step 保存一次 latest_step checkpoint。
+  # 0 表示关闭。
+  save_every_n_steps: 0
+  allow_tf32: true
+  epochs: 10
+
+  # 若需要加载已训练的模型继续训练，将模型路径填写在这里
+  resume_checkpoint: null
+
+inference:
+  batch_size: 1
+  # 推理阶段单个 patch 的最大生成长度。
+  # 如果不设，代码默认使用 2 * max_points * max_features + 2。
+  max_length: 2048
+  # 生成循环中的日志间隔，单位是 token steps。
+  # 0 表示关闭；例如设为 256 时，每生成 256 步打印一次进度。
+  generate_log_interval: 256
+  checkpoint_path: ./checkpoints/best_model
+  output_dir: ./outputs
+
+evaluation:
+  prediction_dir: ./outputs
+  output_path: ./outputs/test_metrics.json
+
+  # 线几何匹配时使用的距离阈值，单位为像素。
+  distance_threshold_px: 5.0
+
+  # 真值 GeoJSON 的坐标模式：
+  # - pixel: 像素坐标
+  # - geo: 地理坐标
+  label_coordinate_mode: pixel
+
+  # 预测 GeoJSON 的坐标模式：
+  # - auto: 自动判断
+  # - pixel: 像素坐标
+  # - geo: 地理坐标
+  prediction_coordinate_mode: auto
