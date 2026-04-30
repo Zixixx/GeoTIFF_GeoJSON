@@ -25,7 +25,7 @@ GeoTIFF_GeoJSON/
     utils/
 ```
 
-推荐数据目录：
+## 数据集目录：
 
 ```text
 data/
@@ -108,52 +108,6 @@ python scripts/infer.py
 python scripts/evaluate.py
 
 ```
-
-## 默认训练配置
-
-```yaml
-model:
-  qwen_tuning_mode: lora
-  lora_r: 16
-  lora_alpha: 32
-  lora_dropout: 0.05
-  lora_ensure_weight_tying: true
-  lora_target_modules:
-    - q_proj
-    - k_proj
-    - v_proj
-    - o_proj
-  lora_modules_to_save:
-    - embed_tokens
-    - lm_head
-  embedding_mean_resizing: false
-  attn_implementation: flash_attention_2
-
-training:
-  batch_size: 1
-  val_batch_size: 1
-  feature_batch_size: 1
-  dataset_cache_files: 1
-  optimizer: adamw
-  mixed_precision: auto
-  gradient_checkpointing: true
-  save_every_n_steps: 0
-```
-
-## checkpoint 保存策略
-
-- 每个 epoch 结束后，如果 `val_loss` 刷新最好值，覆盖保存一次 `best_model`
-- 所有 epoch 完成后保存一次 `final_model`
-
-另外支持按 step 保存：
-
-```yaml
-training:
-  save_every_n_steps: 0
-```
-
-- `0`：关闭
-- `>0`：每若干个 optimizer step 覆盖保存一次 `checkpoints/latest_step`
 
 ## 致谢
 
